@@ -49,7 +49,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Cacheable
-@Immutable
+//@Immutable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "vets")
 @Table(name = "vets")
 public class Vet extends Person {

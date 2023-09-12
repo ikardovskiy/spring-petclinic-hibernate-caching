@@ -86,11 +86,11 @@ public class SecondLevelCacheTest extends PostgresqlDbBaseTest {
     // 2. run with HQL: update Specialty
     Vet vet = session.get(Vet.class, 100);
 
-    //session.createQuery("update Vet v set v.firstName = 'new name'").executeUpdate();
-    session.createQuery("update Specialty s set s.name = 'new specialty'").executeUpdate();
+//    session.createQuery("update Vet v set v.firstName = 'new name'").executeUpdate();
+ //   session.createQuery("update Specialty s set s.name = 'new specialty'").executeUpdate();
     session.flush();
     session.clear();
-
+    System.out.println("Getting Vet");
     Vet cachedCity = session.get(Vet.class, 100);
   }
 

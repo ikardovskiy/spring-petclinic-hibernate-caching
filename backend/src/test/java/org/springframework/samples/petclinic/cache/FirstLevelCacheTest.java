@@ -4,9 +4,12 @@ import com.github.database.rider.core.api.connection.ConnectionHolder;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.github.database.rider.spring.api.DBRider;
-
+import org.hibernate.Session;
+import org.hibernate.engine.internal.StatisticalLoggingSessionEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,8 +19,6 @@ import org.springframework.samples.petclinic.util.PostgresqlDbBaseTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @DBRider
 @DataJpaTest
@@ -25,14 +26,15 @@ import javax.persistence.PersistenceContext;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FirstLevelCacheTest extends PostgresqlDbBaseTest {
-  @PersistenceContext
-  EntityManager em;
+
 
   @Autowired
   VetRepository vetRepository;
 
   @SuppressWarnings("unused")
   public ConnectionHolder connectionHolder = () -> dataSource.getConnection();
+
+  public static Logger log = LoggerFactory.getLogger(FirstLevelCacheTest.class);
 
   @Test
   @DataSet(
@@ -42,10 +44,24 @@ public class FirstLevelCacheTest extends PostgresqlDbBaseTest {
   )
   @Commit
   public void repeatableRead() {
+    StatisticalLoggingSessionEventListener listener = new StatisticalLoggingSessionEventListener();
+    em.unwrap(Session.class).addEventListeners(listener);
     Vet vet = em.find(Vet.class, 100);
+    log.debug("find1");
+    listener.end();
     vet = em.find(Vet.class, 100);
+    listener.end();
     vet = vetRepository.getOne(100);
+    listener.end();
     vet = em.find(Vet.class, 100);
+    listener.end();
+  }
+
+
+
+
+  private void logEntity(Class<?> aClass) {
+    log.info("{} stats: {}", aClass.getCanonicalName(), em.unwrap(Session.class).getSessionFactory().getStatistics().getEntityStatistics(aClass.getCanonicalName()));
   }
 
   @Test

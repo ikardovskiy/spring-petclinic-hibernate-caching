@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:p6spy:postgresql://localhost:5432/petclinic
+    username: petclinic
+    password: qKqUu2vAuf
+    driverClassName: com.p6spy.engine.spy.P6SpyDriver
+
+
+  jpa:
+    properties:
+      hibernate.default_schema: public
+      hibernate.show_sql: false
+      hibernate.use_sql_comments: true
+      hibernate.format_sql: true
+      hibernate.generate_statistics: true
+
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_reference_entries: true
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.factory_class: ${CACHE_REGION_FACTORY:org.hibernate.cache.jcache.JCacheRegionFactory}
+      hibernate.javax.cache.provider: org.ehcache.jsr107.EhcacheCachingProvider
+      hibernate.javax.cache.uri: classpath://jcache.xml
+logging:
+  level:
+    org.springframework.samples.petclinic.cache: trace
+    #log sql
+    org.hibernate.SQL: debug
+    #log bind variables
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    #log statistics
+    org.hibernate.stat.internal.StatisticsImpl: trace
+    # log all
+    org.hibernate: trace
+    # log cache
+    # org.hibernate.cache: trace
+
+    #Log Ehcache
+    org.ehcache: trace

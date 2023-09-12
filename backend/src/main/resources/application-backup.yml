@@ -75,6 +75,7 @@ spring:
           cache:
             provider: org.ehcache.jsr107.EhcacheCachingProvider
             uri: classpath:jcache.xml
+        generate_statistics: true
 
     open-in-view: false
   flyway:
@@ -85,3 +86,9 @@ security:
     secret-key: "0d11efb73eb826d09403a0f0"
     expiration-time-seconds: 3600
     token-prefix: "Bearer"
+
+logging:
+  level:
+    org.hibernate: DEBUG
+    org.springframework.samples.petclinic: DEBUG
+    root: info

@@ -8,3 +8,7 @@ spring:
         javax:
           cache:
             uri: classpath://jcache.xml
+
+
+
+        generate_statistics: true
